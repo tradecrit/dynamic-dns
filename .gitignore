@@ -3,4 +3,5 @@
 .idea
 .env
 deployment/service/charts
-deployment/Chart.lock
+deployment/Chart.lockCargo.lock
+**/Cargo.lock
