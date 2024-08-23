@@ -1,0 +1,19 @@
+services:
+  app:
+    build:
+        context: ../
+        dockerfile: Dockerfile
+    environment:
+      - ENVIRONMENT=development
+      - CLOUDFLARE_API_URL=https://api.cloudflare.com/client/v4
+      - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY}
+      - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID}
+      - DOMAIN=tradecrit.com
+      - DNS_PROVIDER="cloudflare"
+      - DNS_ENTRIES_TO_SYNC="*.dev,dev"
+    networks:
+      - services
+
+networks:
+  services:
+    driver: bridge

@@ -1,0 +1,6 @@
+/target
+*/**/target
+.idea
+.env
+deployment/service/charts
+deployment/Chart.lock

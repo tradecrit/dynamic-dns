@@ -1,0 +1,20 @@
+[package]
+name = "services"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+name = "services"
+path = "src/lib.rs"
+
+[dependencies]
+config = { path = "../config" }
+clients = { path = "../clients" }
+
+# Core
+tracing-subscriber = { version = "0.3.18", features = ["json", "env-filter", "tracing-log"] }
+tracing = { version = "0.1.40", features = ["attributes"] }
+
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "rt"] }
+serde = { version = "1.0.208", features = ["derive"] }

@@ -1,0 +1,20 @@
+[package]
+name = "clients"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+name = "clients"
+path = "src/lib.rs"
+
+[dependencies]
+config = { path = "../config" }
+
+reqwest = {version = "0.12.5", default-features = false, features = ["rustls-tls", "json"]}
+tracing = "0.1.40"
+serde = { version = "1.0.203", features = ["derive"] }
+serde_json = "1.0.120"
+
+tokio = { version = "1", features = ["full"] }
+
