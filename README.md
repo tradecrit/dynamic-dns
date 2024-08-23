@@ -1,2 +1,2 @@
-# dynamic-dns
+# Dynamic DNS Automation
 DDNS Automation
