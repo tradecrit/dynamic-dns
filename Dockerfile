@@ -1,5 +1,8 @@
 FROM rust:alpine3.20 AS builder
 
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
 RUN apk add --no-cache musl-dev openssl-dev
 
 COPY src /src/
