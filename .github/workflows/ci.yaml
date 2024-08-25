@@ -94,6 +94,7 @@ jobs:
 
   merge:
     runs-on: ubuntu-latest
+    name: Merge and Publish Digests
     needs:
       - build
     steps:
