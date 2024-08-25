@@ -53,7 +53,6 @@ jobs:
       - name: Get the version
         id: packageversion
         run: |
-          echo "Setting version to $(cat package.json | jq -r .version)"
           echo "VERSION=$(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name == "dynamic-dns") | .version')" >> "$GITHUB_OUTPUT"
 
       - name: Extract metadata (tags, labels) for Docker
@@ -76,7 +75,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+#          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
 
 #      - name: Export digest
 #        run: |
