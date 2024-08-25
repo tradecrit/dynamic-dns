@@ -8,8 +8,8 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  build-and-push-image:
-    name: Build and push image
+  build:
+    name: Build Images
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
