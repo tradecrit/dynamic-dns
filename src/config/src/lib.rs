@@ -14,8 +14,14 @@ pub struct AppState {
     pub dns_provider: DnsProvider
 }
 
-fn strip_quotes(input: String) -> String {
-    input.trim_matches(|c| c == '\'' || c == '"').to_string()
+trait StripQuotes {
+    fn strip_quotes(&self) -> String;
+}
+
+impl StripQuotes for String {
+    fn strip_quotes(&self) -> String {
+        self.trim_matches(|c| c == '\'' || c == '"').to_string()
+    }
 }
 
 fn init_observability(log_level: tracing::Level) {
@@ -38,7 +44,7 @@ pub async fn load_state() -> AppState {
         tracing::warn!("No .env file found");
     }
 
-    let raw_log_level: String = env::var("RUST_LOG").unwrap_or_else(|_| "INFO".to_string());
+    let raw_log_level: String = env::var("RUST_LOG").unwrap_or_else(|_| "INFO".to_string()).strip_quotes();
     let uppercased_log_level: String = raw_log_level.to_uppercase();
 
     let tracing_level: tracing::Level = match uppercased_log_level.as_str() {
@@ -54,20 +60,25 @@ pub async fn load_state() -> AppState {
     tracing::info!("Starting application with tracing level: {}", tracing_level);
 
     // Core environment variables
-    let environment: String = env::var("ENVIRONMENT").unwrap_or_else(|_| String::from("development"));
+    let environment = env::var("ENVIRONMENT").unwrap_or_else(|_| "development".to_string()).strip_quotes();
 
-    let domain: String = env::var("DOMAIN").expect("DOMAIN must be set");
+    let domain: String = env::var("DOMAIN").expect("DOMAIN must be set").strip_quotes();
 
     let raw_dns_entries_to_sync: String = env::var("DNS_ENTRIES_TO_SYNC").unwrap_or_default();
-    let dns_entries_to_sync: Vec<String> = raw_dns_entries_to_sync.split(',').map(|s| s.to_string()).collect();
+    let dns_entries_to_sync: Vec<String> = raw_dns_entries_to_sync
+        .strip_quotes()
+        .split(',')
+        .map(|s| s.to_string()).collect();
 
     let refresh_interval_seconds: u64 = env::var("REFRESH_INTERVAL_SECONDS")
         .unwrap_or_else(|_| String::from("60"))
+        .strip_quotes()
         .parse()
         .expect("REFRESH_INTERVAL_SECONDS must be a number");
 
     let dns_provider_selection: DnsProviderSelection = env::var("DNS_PROVIDER")
         .expect("DNS_PROVIDER must be set")
+        .strip_quotes()
         .parse()
         .expect("Invalid DNS_PROVIDER value");
 
@@ -78,8 +89,8 @@ pub async fn load_state() -> AppState {
 
     // for each strip all single and double quote from start/end if present
     let app_state: AppState = AppState {
-        environment: strip_quotes(environment),
-        domain: strip_quotes(domain),
+        environment,
+        domain,
         dns_entries_to_sync,
         dns_provider,
         refresh_interval_seconds

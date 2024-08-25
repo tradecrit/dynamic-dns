@@ -1,5 +1,6 @@
 use std::env;
 use std::str::FromStr;
+use crate::StripQuotes;
 
 // Top level provider configuration
 #[derive(Debug, Clone)]
@@ -29,11 +30,13 @@ impl FromStr for DnsProviderSelection {
                 let api_url: String = env::var("CLOUDFLARE_API_URL")
                     .unwrap_or("https://api.cloudflare.com/client/v4".to_string());
 
-                let zone_id: String = env::var("CLOUDFLARE_ZONE_ID").expect("CLOUDFLARE_ZONE_ID must be set");
-                let api_key: String = env::var("CLOUDFLARE_API_KEY").expect("CLOUDFLARE_API_KEY must be set");
+                let zone_id: String = env::var("CLOUDFLARE_ZONE_ID").expect("CLOUDFLARE_ZONE_ID must be set").strip_quotes();
+                let api_key: String = env::var("CLOUDFLARE_API_KEY").expect("CLOUDFLARE_API_KEY must be set").strip_quotes();
 
                 let proxy_enabled: bool = env::var("CLOUDFLARE_PROXY_ENABLED")
                     .unwrap_or("false".to_string())
+                    .to_lowercase()
+                    .strip_quotes()
                     .parse()
                     .expect("CLOUDFLARE_PROXY_ENABLED must be a boolean");
 
@@ -46,7 +49,9 @@ impl FromStr for DnsProviderSelection {
 
                 Ok(DnsProviderSelection::Cloudflare(settings))
             },
-            _ => Err("Invalid DNS provider".to_string())
+            _ => {
+                Err(format!("Unsupported DNS provider: {}", input))
+            }
         }
     }
 }

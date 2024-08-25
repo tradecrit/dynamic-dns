@@ -1,6 +1,8 @@
 services:
   app:
-    image: hcr.io/tradecrit/dynamic-dns:latest
+    build:
+      context: ../
+      dockerfile: Dockerfile
     environment:
       - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY}
       - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID}
