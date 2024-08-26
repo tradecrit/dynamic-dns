@@ -2,7 +2,7 @@ name: Continuous Integration Workflow
 
 on:
   push:
-    branches: [ 'main' , "feature/*" ]
+    branches: [ 'main' ]
 
 env:
   REGISTRY: ghcr.io
