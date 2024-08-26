@@ -4,4 +4,6 @@
 .env
 ../helm-charts/charts/service/charts
 deployment/Chart.lockCargo.lock
-**/Cargo.lock
+**/*/Cargo.lock
+Cargo.lock
+.vscode

@@ -25,6 +25,8 @@ async fn workflow(config: &AppState) -> Result<(), AppError> {
         }
     };
 
+    tracing::debug!("A Records: {:?}", a_records.keys());
+
     // Check each subdomain to see if it exists in the map. If it exists, ensure the IP is correct.
     // If it is correct, do nothing. If it is incorrect, update the record.
     // If it is missing then create the record, We do not remove or touch any other records.
@@ -33,6 +35,7 @@ async fn workflow(config: &AppState) -> Result<(), AppError> {
     let mut update_records: Vec<DnsRecord> = vec![];
 
     for entry in &sync_entries {
+        tracing::debug!("Checking entry: {}", entry);
         let fqdn = format!("{}.{}", entry, config.domain);
 
         if !a_records.contains_key(&fqdn) {
@@ -41,7 +44,7 @@ async fn workflow(config: &AppState) -> Result<(), AppError> {
             update_records.push(new_record);
         }
 
-        if let Some(record) = a_records.get(entry) {
+        if let Some(record) = a_records.get(&fqdn) {
             let updated_record = DnsRecord::build_record(entry, &public_ip, Some(record));
 
             tracing::debug!("Checking existing record: {}", record);
@@ -87,14 +90,14 @@ async fn main() -> Result<(), AppError> {
 
         match execution_result {
             Ok(_) => {
-                tracing::info!("Run successful");
+                tracing::info!("Iteration successful");
             },
             Err(error) => {
-                tracing::error!("Run failed: {:?}", error);
+                tracing::error!("Iteration failed: {:?}", error);
             }
         }
 
-        tracing::info!("{}", format!("Run complete, waiting {} seconds until next run", config.refresh_interval_seconds));
+        tracing::info!("{}", format!("Iteration complete, waiting {} seconds until next run", config.refresh_interval_seconds));
 
         tokio::time::sleep(tokio::time::Duration::from_secs(config.refresh_interval_seconds)).await;
     }
