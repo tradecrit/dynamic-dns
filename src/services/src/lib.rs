@@ -9,6 +9,10 @@ use crate::dns_record::DnsRecord;
 pub mod error;
 pub mod dns_record;
 
+/// Resolves the public IP address of the current machine, using the Ipify service.
+///
+/// # Returns
+/// String containing the public IP address.
 pub async fn resolve_public_ip() -> Result<String, Error> {
     let fetch_ip_address = Ipify::new(Format::Text).get_ip().await;
 
@@ -22,6 +26,13 @@ pub async fn resolve_public_ip() -> Result<String, Error> {
     Ok(ip_address)
 }
 
+/// Fetches the existing DNS records from the DNS provider.
+///
+/// # Arguments
+/// * `dns_provider` - The DNS provider configuration.
+///
+/// # Returns
+/// A HashMap containing the existing DNS records.
 pub async fn get_dns_records(
     dns_provider: &DnsProvider
 ) -> Result<HashMap<String, DnsRecord>, Error> {
@@ -33,7 +44,12 @@ pub async fn get_dns_records(
             let api_key = &provider.api_key;
             let zone_id = &provider.zone_id;
 
-            let client = cloudflare::Client::new(api_url.clone(), api_key.clone(), zone_id.clone(), provider.proxy_enabled);
+            let client = cloudflare::Client::new(
+                api_url.clone(),
+                api_key.clone(),
+                zone_id.clone(),
+                provider.proxy_enabled
+            );
 
             let fetch_domain_records = client.get_zone_records().await;
 

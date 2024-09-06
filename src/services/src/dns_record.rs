@@ -26,6 +26,15 @@ impl Display for DnsRecord {
 }
 
 impl DnsRecord {
+    /// Build a new DNS record or update an existing one.
+    ///
+    /// # Arguments
+    /// subdomain - The subdomain to create or update.
+    /// ip - The IP address to set for the record.
+    /// existing_record - The existing record to update, if it exists.
+    ///
+    /// # Returns
+    /// A new DNS record.
     pub fn build_record(subdomain: &str, ip: &str, existing_record: Option<&DnsRecord>) -> DnsRecord {
         match existing_record {
             Some(record) => {

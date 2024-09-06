@@ -5,6 +5,12 @@ use dotenvy::dotenv;
 
 use crate::dns_providers::{DnsProvider, DnsProviderSelection};
 
+/// Struct representing the application state
+/// This struct is used to store the application configuration
+/// and is used to pass the configuration to the various services
+/// and clients.
+///
+/// Note that it is not mutable but rather cloned and passed around.
 #[derive(Debug, Clone)]
 pub struct AppState {
     pub environment: String,
@@ -19,11 +25,14 @@ trait StripQuotes {
 }
 
 impl StripQuotes for String {
+    /// Strip single and double quotes from the start and end of a string.
     fn strip_quotes(&self) -> String {
         self.trim_matches(|c| c == '\'' || c == '"').to_string()
     }
 }
 
+/// Initialize the observability layer, this allows tracing, metrics, etc. to be configured.
+/// Not fully implemented yet, but will be expanded upon in the future.
 fn init_observability(log_level: tracing::Level) {
     tracing_subscriber::fmt()
         .with_level(true)
@@ -37,6 +46,7 @@ fn init_observability(log_level: tracing::Level) {
         .init();
 }
 
+/// Load the application state from the environment variables.
 pub async fn load_state() -> AppState {
     // Log configuration and bootstrap
     let load_env = dotenv();

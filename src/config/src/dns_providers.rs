@@ -2,21 +2,22 @@ use std::env;
 use std::str::FromStr;
 use crate::StripQuotes;
 
-// Top level provider configuration
+/// Struct representing the DNS provider configuration
 #[derive(Debug, Clone)]
 pub struct DnsProvider {
     pub config: DnsProviderSelection,
 }
 
-// The supported DNS providers, currently only Cloudflare
+/// Enum representing the DNS provider selection
+/// Currently only Cloudflare is supported but this can be extended to support other providers
 #[derive(Debug, Clone)]
 pub enum DnsProviderSelection {
     Cloudflare(CloudflareProviderSettings),
 }
 
-// Implement the FromStr trait for DnsProviderConfig, essentially based on the selected provider
-// we will load the required environment variables, and the required environment variables are
-// different for each provider
+/// Implement the FromStr trait for DnsProviderConfig, essentially based on the selected provider
+/// we will load the required environment variables, and the required environment variables are
+/// different for each provider.
 impl FromStr for DnsProviderSelection {
     type Err = String;
 
